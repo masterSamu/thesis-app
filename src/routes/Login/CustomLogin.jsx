@@ -1,9 +1,11 @@
 import { useContext } from "react";
 import { Button, Form } from "react-bootstrap";
 import { AppContext } from "../../context/appContext";
+import { useNavigate } from "react-router-dom";
 
 export default function CustomLogin() {
   const { login } = useContext(AppContext);
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -11,6 +13,7 @@ export default function CustomLogin() {
     const password = e.target.password.value;
     if (email && password) {
       login({ email, password });
+      navigate("/recipes");
     }
   };
 

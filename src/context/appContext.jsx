@@ -1,17 +1,18 @@
 import { createContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 /**
  * @typedef TAppContext
  * @property {object} user
- * @property {void} login
- * @property {void} logout
+ * @property {() => void} login
+ * @property {() => void} logout
  */
 
 /** @type {import('react').Context<TAppContext>} */
 export const AppContext = createContext();
 
 export default function appContextProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(localStorage.getItem("user"));
 
   /**
    * Login user to system
@@ -19,12 +20,14 @@ export default function appContextProvider({ children }) {
    */
   const login = (credentials) => {
     // Handle login
-    setUser(credentials)
+    setUser("qwerty");
+    localStorage.setItem("user", "qwerty");
   };
 
   /** Logout user from system */
   const logout = () => {
     setUser(null);
+    localStorage.removeItem("user");
   };
 
   return (
