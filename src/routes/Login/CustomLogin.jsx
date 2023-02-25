@@ -13,7 +13,7 @@ export default function CustomLogin() {
     const password = e.target.password.value;
     if (email && password) {
       login({ email, password });
-      navigate("/recipes");
+      navigate("/recipes/browse");
     }
   };
 
