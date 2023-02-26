@@ -26,7 +26,6 @@ export default function UserContextProvider({ children }) {
   /** Logout user from system */
   const logout = () => {
     setUser(null);
-    setFoods([]);
     localStorage.removeItem("user");
   };
 

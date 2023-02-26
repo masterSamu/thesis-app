@@ -31,6 +31,7 @@ export default function FoodContextProvider({ children }) {
 
   useEffect(() => {
     if (user) loadFoods();
+    else resetFoods();
   }, [user]);
 
   /** Load foods from database */
@@ -62,8 +63,10 @@ export default function FoodContextProvider({ children }) {
     setFoods([...foods, food]);
   };
 
+  const resetFoods = () => setFoods([]);
+
   return (
-    <FoodContext.Provider value={{ foods, loadFoods, saveFood }}>
+    <FoodContext.Provider value={{ foods, loadFoods, saveFood, resetFoods }}>
       {children}
     </FoodContext.Provider>
   );
