@@ -1,10 +1,11 @@
 import { createBrowserRouter } from "react-router-dom";
 import Login from "./Login";
 import PrivateRoute from "./PrivateRoute";
-import Recipes from "./Recipes";
-import AddRecipe from "./Recipes/AddRecipe";
-import BrowseRecipes from "./Recipes/BrowseRecipes";
+import Foods from "./Foods";
+import AddFood from "./Foods/AddFood";
+import BrowseFoods from "./Foods/BrowseFoods";
 import Join from "./Join";
+import FoodContextProvider from "../context/foodContext";
 
 export const router = createBrowserRouter([
   {
@@ -13,26 +14,28 @@ export const router = createBrowserRouter([
   },
   { path: "/join", element: <Join /> },
   {
-    path: "/recipes",
+    path: "/foods",
     element: (
       <PrivateRoute>
-        <Recipes />
+        <Foods />
       </PrivateRoute>
     ),
     children: [
       {
-        path: "/recipes/browse",
+        path: "/foods/browse",
         element: (
           <PrivateRoute>
-            <BrowseRecipes />
+            <FoodContextProvider>
+              <BrowseFoods />
+            </FoodContextProvider>
           </PrivateRoute>
         ),
       },
       {
-        path: "/recipes/add",
+        path: "/foods/add",
         element: (
           <PrivateRoute>
-            <AddRecipe />
+            <AddFood />
           </PrivateRoute>
         ),
       },

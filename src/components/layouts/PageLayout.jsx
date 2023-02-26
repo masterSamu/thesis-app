@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Container } from "react-bootstrap";
-import { AppContext } from "../../context/appContext";
+import { useUser } from "../../context/userContext";
 import Navbar from "../Navbar";
 
 /**
@@ -9,7 +9,7 @@ import Navbar from "../Navbar";
  * @returns {JSX.Element}
  */
 export default function PageLayout({ children }) {
-  const { user } = useContext(AppContext);
+  const { user } = useUser();
 
   return (
     <>

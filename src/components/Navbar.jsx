@@ -1,10 +1,9 @@
-import { useContext } from "react";
 import { Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { AppContext } from "../context/appContext";
+import { useUser } from "../context/userContext";
 
 export default function Navbar() {
-  const { logout } = useContext(AppContext);
+  const { logout } = useUser();
 
   return (
     <Nav
@@ -13,12 +12,12 @@ export default function Navbar() {
     >
       <div className="d-flex flex-row gap-4 ">
         <Nav.Item>
-          <Nav.Link as={Link} to="/recipes/browse">
+          <Nav.Link as={Link} to="/foods/browse">
             Browse
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link as={Link} to="/recipes/add">
+          <Nav.Link as={Link} to="/foods/add">
             Add
           </Nav.Link>
         </Nav.Item>

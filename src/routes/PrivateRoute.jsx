@@ -1,5 +1,4 @@
-import { useContext } from "react";
-import { AppContext } from "../context/appContext";
+import {  useUser } from "../context/userContext";
 import { Navigate } from "react-router-dom";
 
 /**
@@ -10,7 +9,7 @@ import { Navigate } from "react-router-dom";
  * @returns {JSX.Element}
  */
 export default function PrivateRoute({ children }) {
-  const { user } = useContext(AppContext);
+  const { user } = useUser();
 
   if (user === null) {
     return <Navigate to="/" replace />;

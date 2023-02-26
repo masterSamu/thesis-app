@@ -1,10 +1,9 @@
-import { useContext } from "react";
 import { Button, Form } from "react-bootstrap";
-import { AppContext } from "../../context/appContext";
+import { useUser } from "../../context/userContext";
 import { useNavigate } from "react-router-dom";
 
 export default function CustomLogin() {
-  const { login } = useContext(AppContext);
+  const { login } = useUser();
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
