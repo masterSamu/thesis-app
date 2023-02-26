@@ -5,6 +5,8 @@ import { createContext, useContext, useState } from "react";
  * @property {object | null} user
  * @property {() => void} login
  * @property {() => void} logout
+ * @property {{isLoading: boolean,
+ * error: {message: string} | null}} status
  */
 
 /** @type {import('react').Context<TUserContext>} */
@@ -12,6 +14,7 @@ export const UserContext = createContext();
 
 export default function UserContextProvider({ children }) {
   const [user, setUser] = useState(localStorage.getItem("user"));
+  const [status, setStatus] = useState({ isLoading: false, error: null });
 
   /**
    * Login user to system
@@ -19,8 +22,10 @@ export default function UserContextProvider({ children }) {
    */
   const login = (credentials) => {
     // Handle login
+    setStatus({ ...status, isLoading: true });
     setUser("qwerty");
     localStorage.setItem("user", "qwerty");
+    setStatus({ ...status, isLoading: false });
   };
 
   /** Logout user from system */
