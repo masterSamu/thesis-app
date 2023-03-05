@@ -1,12 +1,17 @@
 import { createContext, useContext, useState } from "react";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
+import { auth } from "../firebase-config";
 
 /**
  * @typedef TUserContext
- * @property {object | null} user
+ * @property {import("firebase/auth").UserCredential.User | null} user
  * @property {() => void} login
  * @property {() => void} logout
- * @property {{isLoading: boolean,
- * error: {message: string} | null}} status
+ * @property {() => void} createAccount
  */
 
 /** @type {import('react').Context<TUserContext>} */
@@ -14,28 +19,56 @@ export const UserContext = createContext();
 
 export default function UserContextProvider({ children }) {
   const [user, setUser] = useState(localStorage.getItem("user"));
-  const [status, setStatus] = useState({ isLoading: false, error: null });
 
   /**
-   * Login user to system
+   * Login
    * @param {{email: string, password: string}} credentials
    */
-  const login = (credentials) => {
-    // Handle login
-    setStatus({ ...status, isLoading: true });
-    setUser("qwerty");
-    localStorage.setItem("user", "qwerty");
-    setStatus({ ...status, isLoading: false });
+  const login = async (credentials) => {
+    signInWithEmailAndPassword(auth, credentials.email, credentials.password)
+      .then((userCredential) => {
+        setUser(userCredential.user);
+        localStorage.setItem("user", userCredential.user.uid);
+      })
+      .catch((error) => {
+        console.error(error.message);
+      });
   };
 
-  /** Logout user from system */
+  /** Logout user */
   const logout = () => {
-    setUser(null);
-    localStorage.removeItem("user");
+    signOut(auth)
+      .then(() => {
+        setUser(null);
+        localStorage.removeItem("user");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  /**
+   * Create new user
+   * @param {{email: string, password: string}} credentials
+   * @returns {import("firebase/auth").UserCredential.User | {error: string}}
+   */
+  const createUser = async (credentials) => {
+    createUserWithEmailAndPassword(
+      auth,
+      credentials.email,
+      credentials.password
+    )
+      .then((userCredential) => {
+        setUser(userCredential.user);
+        localStorage.setItem("user", userCredential.user.uid);
+      })
+      .catch((error) => {
+        console.error(error.message);
+      });
   };
 
   return (
-    <UserContext.Provider value={{ user, login, logout }}>
+    <UserContext.Provider value={{ user, login, logout, createUser }}>
       {children}
     </UserContext.Provider>
   );

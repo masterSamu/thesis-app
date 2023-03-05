@@ -1,9 +1,15 @@
 import { Nav } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../context/userContext";
 
 export default function Navbar() {
   const { logout } = useUser();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
     <Nav
@@ -23,7 +29,7 @@ export default function Navbar() {
         </Nav.Item>
       </div>
       <div>
-        <Nav.Item onClick={logout}>
+        <Nav.Item onClick={handleLogout}>
           <Nav.Link className="text-danger">Logout</Nav.Link>
         </Nav.Item>
       </div>

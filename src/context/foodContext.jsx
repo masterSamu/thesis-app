@@ -14,14 +14,14 @@ import {
   useState,
 } from "react";
 import { useUser } from "./userContext";
+import { db } from "../firebase-config";
+import { collection, addDoc } from "firebase/firestore";
 
 /**
  * @typedef TFoodContext
  * @property {[TFood]} foods
  * @property {() => void} loadFoods
  * @property {() => void} saveFood
- * @property {{isLoading: boolean,
- * error: {message: string} | null}} status
  */
 
 /** @type {import('react').Context<TFoodContext>} */
@@ -29,12 +29,10 @@ export const FoodContext = createContext();
 
 export default function FoodContextProvider({ children }) {
   const [foods, setFoods] = useState([]);
-  const [status, setStatus] = useState({ isLoading: false, error: null });
   const { user } = useUser();
 
   /** Load foods from database */
   const loadFoods = useCallback(() => {
-    setStatus({ ...status, isLoading: true });
     setFoods([
       ...foods,
       {
@@ -52,17 +50,19 @@ export default function FoodContextProvider({ children }) {
           "https://images.unsplash.com/photo-1605789538467-f715d58e03f9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80",
       },
     ]);
-    setStatus({ ...status, isLoading: false });
   }, [user]);
 
   /**
    * Save food
    * @param {TFood} food
    */
-  const saveFood = (food) => {
-    setStatus({ ...status, isLoading: true });
+  const saveFood = async (food) => {
+    console.log("uid:", user);
+    food.uid = user;
+    // Save to database
+    const docRef = await addDoc(collection(db, "foods"), food);
+    food.id = docRef.id;
     setFoods([...foods, food]);
-    setStatus({ ...status, isLoading: false });
   };
 
   /** Reset foods state array */

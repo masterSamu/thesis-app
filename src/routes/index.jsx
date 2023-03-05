@@ -17,7 +17,9 @@ export const router = createBrowserRouter([
     path: "/foods",
     element: (
       <PrivateRoute>
-        <Foods />
+        <FoodContextProvider>
+          <Foods />
+        </FoodContextProvider>
       </PrivateRoute>
     ),
     children: [
