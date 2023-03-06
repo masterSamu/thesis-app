@@ -3,7 +3,7 @@
  * @property {string} id
  * @property {string} name
  * @property {string} description
- * @property {file} photo
+ * @property {HTMLImageElement} photo
  */
 
 import {
@@ -14,8 +14,14 @@ import {
   useState,
 } from "react";
 import { useUser } from "./userContext";
-import { db } from "../firebase-config";
-import { collection, addDoc } from "firebase/firestore";
+import { db, storage } from "../firebase-config";
+import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+  uploadBytesResumable,
+} from "firebase/storage";
 
 /**
  * @typedef TFoodContext
@@ -32,24 +38,16 @@ export default function FoodContextProvider({ children }) {
   const { user } = useUser();
 
   /** Load foods from database */
-  const loadFoods = useCallback(() => {
-    setFoods([
-      ...foods,
-      {
-        id: "123",
-        name: "Pizza",
-        description: "Pepperoni pizza juustolla",
-        photo:
-          "https://images.unsplash.com/photo-1541745537411-b8046dc6d66c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=776&q=80",
-      },
-      {
-        id: "1234",
-        name: "Burger",
-        description: "Cheese burger with double melting cheese",
-        photo:
-          "https://images.unsplash.com/photo-1605789538467-f715d58e03f9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80",
-      },
-    ]);
+  const loadFoods = useCallback(async () => {
+    if (user) {
+      const q = query(collection(db, "foods"), where("uid", "==", user));
+      const querySnapshot = await getDocs(q);
+      const loadedFoods = [];
+      querySnapshot.forEach((doc) => {
+        loadedFoods.push({ ...doc.data(), id: doc.id });
+      });
+      setFoods(loadedFoods);
+    }
   }, [user]);
 
   /**
@@ -57,12 +55,40 @@ export default function FoodContextProvider({ children }) {
    * @param {TFood} food
    */
   const saveFood = async (food) => {
-    console.log("uid:", user);
-    food.uid = user;
-    // Save to database
-    const docRef = await addDoc(collection(db, "foods"), food);
-    food.id = docRef.id;
-    setFoods([...foods, food]);
+    if (user) {
+      food.uid = user;
+      console.log(food)
+      // Save image file
+      const fileRef = ref(storage, `test`);
+      const uploadTask = uploadBytesResumable(fileRef, food.photo);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+        },
+        (error) => {
+          console.error(error);
+        },
+        () => {
+          // Upload completed successfully, now we can get the download URL
+          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+            console.log("File available at", downloadURL);
+            // Save to database
+
+            const docRef = await addDoc(collection(db, "foods"), {
+              ...food,
+              photo: downloadURL,
+            });
+            food.id = docRef.id;
+            setFoods([...foods, food]);
+          });
+        }
+      );
+    }
   };
 
   /** Reset foods state array */
@@ -70,7 +96,7 @@ export default function FoodContextProvider({ children }) {
 
   useEffect(() => {
     if (user) loadFoods();
-    else resetFoods();
+    //else resetFoods();
   }, [user]);
 
   return (
