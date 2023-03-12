@@ -17,7 +17,8 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
-
-connectFirestoreEmulator(db, "localhost", 8080);
-connectAuthEmulator(auth, "http://localhost:9099");
-connectStorageEmulator(auth, "http://localhost", 9199);
+/*
+  connectFirestoreEmulator(db, "localhost", 8080);
+  connectStorageEmulator(storage, "localhost", 9199);
+  connectAuthEmulator(auth, "http://localhost:9099");
+*/

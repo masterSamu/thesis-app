@@ -22,7 +22,7 @@ export default function CustomLogin() {
 
   return (
     <>
-      <h2>Custom Login Form</h2>
+      <h2>Login</h2>
       <LoginForm handleSubmit={handleSubmit} submitText="Login" />
     </>
   );

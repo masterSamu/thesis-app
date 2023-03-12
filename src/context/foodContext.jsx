@@ -14,14 +14,8 @@ import {
   useState,
 } from "react";
 import { useUser } from "./userContext";
-import { db, storage } from "../firebase-config";
+import { db } from "../firebase-config";
 import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
-import {
-  getDownloadURL,
-  ref,
-  uploadBytes,
-  uploadBytesResumable,
-} from "firebase/storage";
 
 /**
  * @typedef TFoodContext
@@ -56,38 +50,10 @@ export default function FoodContextProvider({ children }) {
    */
   const saveFood = async (food) => {
     if (user) {
-      food.uid = user;
       console.log(food)
-      // Save image file
-      const fileRef = ref(storage, `test`);
-      const uploadTask = uploadBytesResumable(fileRef, food.photo);
-
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
-        },
-        (error) => {
-          console.error(error);
-        },
-        () => {
-          // Upload completed successfully, now we can get the download URL
-          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-            console.log("File available at", downloadURL);
-            // Save to database
-
-            const docRef = await addDoc(collection(db, "foods"), {
-              ...food,
-              photo: downloadURL,
-            });
-            food.id = docRef.id;
-            setFoods([...foods, food]);
-          });
-        }
-      );
+      const docRef = await addDoc(collection(db, "foods"), food);
+      food.id = docRef.id;
+      setFoods([...foods, food]);
     }
   };
 
