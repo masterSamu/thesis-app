@@ -1,0 +1,11 @@
+{
+  "resourceName": "s3thesisfoodappstorage6249924d",
+  "bucketName": "thesis-food-app-storage-6249924d",
+  "policyUUID": "78e93fb4",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ"
+  ]
+}

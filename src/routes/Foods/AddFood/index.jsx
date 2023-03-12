@@ -11,7 +11,7 @@ export default function AddFood() {
     e.preventDefault();
     const name = e.target.name.value;
     const description = e.target.description.value;
-    const photo = URL.createObjectURL(e.target.photo.files[0]);
+    const photo = e.target.photo.files[0];
 
     saveFood({ name, description, photo });
     navigate("/foods/browse");

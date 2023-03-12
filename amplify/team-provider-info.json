@@ -1,0 +1,23 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-thesisfoodapp-staging-152108-authRole",
+      "UnauthRoleArn": "arn:aws:iam::197339847033:role/amplify-thesisfoodapp-staging-152108-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::197339847033:role/amplify-thesisfoodapp-staging-152108-authRole",
+      "Region": "eu-north-1",
+      "DeploymentBucketName": "amplify-thesisfoodapp-staging-152108-deployment",
+      "UnauthRoleName": "amplify-thesisfoodapp-staging-152108-unauthRole",
+      "StackName": "amplify-thesisfoodapp-staging-152108",
+      "StackId": "arn:aws:cloudformation:eu-north-1:197339847033:stack/amplify-thesisfoodapp-staging-152108/83d71fa0-c0e9-11ed-910c-0a0540ecfdfc",
+      "AmplifyAppId": "d2plv21gtmrs24"
+    },
+    "categories": {
+      "auth": {
+        "thesisfoodapp": {}
+      },
+      "storage": {
+        "s3thesisfoodappstorage6249924d": {}
+      }
+    }
+  }
+}

@@ -1,10 +1,12 @@
 import { createContext, useContext, useState } from "react";
+import { Auth } from "aws-amplify";
 
 /**
  * @typedef TUserContext
  * @property {object | null} user
  * @property {() => void} login
  * @property {() => void} logout
+ * @property {() => void} createUser
  * @property {{isLoading: boolean,
  * error: {message: string} | null}} status
  */
@@ -20,12 +22,18 @@ export default function UserContextProvider({ children }) {
    * Login user to system
    * @param {{email: string, password: string}} credentials
    */
-  const login = (credentials) => {
+  const login = async (credentials) => {
     // Handle login
-    setStatus({ ...status, isLoading: true });
-    setUser("qwerty");
-    localStorage.setItem("user", "qwerty");
-    setStatus({ ...status, isLoading: false });
+    try {
+      const response = await Auth.signIn(credentials.email, credentials.password);
+      console.log(response)
+      if (response?.userSub) {
+        setUser(response.userSub);
+        localStorage.setItem("user", response.userSub);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   /** Logout user from system */
@@ -34,8 +42,25 @@ export default function UserContextProvider({ children }) {
     localStorage.removeItem("user");
   };
 
+  /**
+   *
+   * @param {{username: string, password: string}} user
+   */
+  const createUser = async (credentials) => {
+    try {
+      const response = await Auth.signUp(credentials);
+      if (response?.userSub) {
+        setUser(response.userSub);
+        localStorage.setItem("user", response.userSub);
+      }
+      console.log(user);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
-    <UserContext.Provider value={{ user, login, logout }}>
+    <UserContext.Provider value={{ user, login, logout, createUser }}>
       {children}
     </UserContext.Provider>
   );

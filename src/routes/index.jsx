@@ -1,3 +1,4 @@
+
 import { createBrowserRouter } from "react-router-dom";
 import Login from "./Login";
 import PrivateRoute from "./PrivateRoute";
@@ -17,7 +18,9 @@ export const router = createBrowserRouter([
     path: "/foods",
     element: (
       <PrivateRoute>
-        <Foods />
+        <FoodContextProvider>
+          <Foods />
+        </FoodContextProvider>
       </PrivateRoute>
     ),
     children: [
