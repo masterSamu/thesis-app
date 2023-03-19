@@ -1,4 +1,4 @@
-import { Card } from "react-bootstrap";
+import FoodCard from "./FoodCard";
 
 /**
  *
@@ -11,17 +11,7 @@ export default function FoodsList({ foods }) {
   return (
     <div className="d-flex flex-md-row flex-column gap-3 flex-wrap">
       {foods.map((food) => {
-        return (
-          <Card key={food.id}>
-            <Card.Img src={food.photo} />
-            <Card.ImgOverlay>
-              <Card.Body className="bg-dark bg-gradient text-white bg-opacity-50 rounded-2">
-                <Card.Title>{food.name}</Card.Title>
-                <Card.Text>{food.description}</Card.Text>
-              </Card.Body>
-            </Card.ImgOverlay>
-          </Card>
-        );
+        return <FoodCard food={food} />;
       })}
     </div>
   );

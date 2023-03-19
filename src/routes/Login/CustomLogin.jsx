@@ -1,10 +1,15 @@
 import { Button, Form } from "react-bootstrap";
 import { useUser } from "../../context/userContext";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function CustomLogin() {
-  const { login } = useUser();
+  const { user, login } = useUser();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) navigate("/foods/browse");
+  }, [user]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -12,7 +17,6 @@ export default function CustomLogin() {
     const password = e.target.password.value;
     if (email && password) {
       login({ email, password });
-      navigate("/foods/browse");
     }
   };
 

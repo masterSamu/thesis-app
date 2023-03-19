@@ -16,7 +16,6 @@ export const UserContext = createContext();
 
 export default function UserContextProvider({ children }) {
   const [user, setUser] = useState(localStorage.getItem("user"));
-  const [status, setStatus] = useState({ isLoading: false, error: null });
 
   /**
    * Login user to system
@@ -25,11 +24,14 @@ export default function UserContextProvider({ children }) {
   const login = async (credentials) => {
     // Handle login
     try {
-      const response = await Auth.signIn(credentials.email, credentials.password);
-      console.log(response)
-      if (response?.userSub) {
-        setUser(response.userSub);
-        localStorage.setItem("user", response.userSub);
+      const response = await Auth.signIn(
+        credentials.email,
+        credentials.password
+      );
+      console.log(response);
+      if (response?.username) {
+        setUser(response.username);
+        localStorage.setItem("user", response.username);
       }
     } catch (error) {
       console.error(error);
@@ -37,7 +39,8 @@ export default function UserContextProvider({ children }) {
   };
 
   /** Logout user from system */
-  const logout = () => {
+  const logout = async () => {
+    await Auth.signOut();
     setUser(null);
     localStorage.removeItem("user");
   };
@@ -49,11 +52,11 @@ export default function UserContextProvider({ children }) {
   const createUser = async (credentials) => {
     try {
       const response = await Auth.signUp(credentials);
+      console.log(response);
       if (response?.userSub) {
-        setUser(response.userSub);
-        localStorage.setItem("user", response.userSub);
+        setUser(response.username);
+        localStorage.setItem("user", response.username);
       }
-      console.log(user);
     } catch (error) {
       console.error(error);
     }

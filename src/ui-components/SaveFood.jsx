@@ -46,7 +46,7 @@ export default function SaveFood(props) {
     name: [],
     description: [],
     uid: [],
-    photo: [],
+    photo: [{ type: "Required" }],
   };
   const runValidationTasks = async (
     fieldName,
@@ -107,7 +107,12 @@ export default function SaveFood(props) {
               modelFields[key] = undefined;
             }
           });
-          await DataStore.save(new Foods(modelFields));
+          const modelFieldsToSave = {
+            name: modelFields.name,
+            description: modelFields.description,
+            uid: modelFields.uid,
+          };
+          await DataStore.save(new Foods(modelFieldsToSave));
           if (onSuccess) {
             onSuccess(modelFields);
           }
@@ -206,8 +211,7 @@ export default function SaveFood(props) {
       ></TextField>
       <TextField
         label="Photo"
-        isRequired={false}
-        isReadOnly={false}
+        isRequired={true}
         value={photo}
         onChange={(e) => {
           let { value } = e.target;

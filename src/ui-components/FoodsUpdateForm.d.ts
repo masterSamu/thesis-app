@@ -17,13 +17,11 @@ export declare type FoodsUpdateFormInputValues = {
     name?: string;
     description?: string;
     uid?: string;
-    photo?: string;
 };
 export declare type FoodsUpdateFormValidationValues = {
     name?: ValidationFunction<string>;
     description?: ValidationFunction<string>;
     uid?: ValidationFunction<string>;
-    photo?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type FoodsUpdateFormOverridesProps = {
@@ -31,7 +29,6 @@ export declare type FoodsUpdateFormOverridesProps = {
     name?: PrimitiveOverrideProps<TextFieldProps>;
     description?: PrimitiveOverrideProps<TextFieldProps>;
     uid?: PrimitiveOverrideProps<TextFieldProps>;
-    photo?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type FoodsUpdateFormProps = React.PropsWithChildren<{
     overrides?: FoodsUpdateFormOverridesProps | undefined | null;

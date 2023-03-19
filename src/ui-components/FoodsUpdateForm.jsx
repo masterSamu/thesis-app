@@ -27,14 +27,12 @@ export default function FoodsUpdateForm(props) {
     name: "",
     description: "",
     uid: "",
-    photo: "",
   };
   const [name, setName] = React.useState(initialValues.name);
   const [description, setDescription] = React.useState(
     initialValues.description
   );
   const [uid, setUid] = React.useState(initialValues.uid);
-  const [photo, setPhoto] = React.useState(initialValues.photo);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = foodsRecord
@@ -43,7 +41,6 @@ export default function FoodsUpdateForm(props) {
     setName(cleanValues.name);
     setDescription(cleanValues.description);
     setUid(cleanValues.uid);
-    setPhoto(cleanValues.photo);
     setErrors({});
   };
   const [foodsRecord, setFoodsRecord] = React.useState(foods);
@@ -59,7 +56,6 @@ export default function FoodsUpdateForm(props) {
     name: [],
     description: [],
     uid: [],
-    photo: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -90,7 +86,6 @@ export default function FoodsUpdateForm(props) {
           name,
           description,
           uid,
-          photo,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -149,7 +144,6 @@ export default function FoodsUpdateForm(props) {
               name: value,
               description,
               uid,
-              photo,
             };
             const result = onChange(modelFields);
             value = result?.name ?? value;
@@ -176,7 +170,6 @@ export default function FoodsUpdateForm(props) {
               name,
               description: value,
               uid,
-              photo,
             };
             const result = onChange(modelFields);
             value = result?.description ?? value;
@@ -203,7 +196,6 @@ export default function FoodsUpdateForm(props) {
               name,
               description,
               uid: value,
-              photo,
             };
             const result = onChange(modelFields);
             value = result?.uid ?? value;
@@ -217,33 +209,6 @@ export default function FoodsUpdateForm(props) {
         errorMessage={errors.uid?.errorMessage}
         hasError={errors.uid?.hasError}
         {...getOverrideProps(overrides, "uid")}
-      ></TextField>
-      <TextField
-        label="Photo"
-        isRequired={false}
-        isReadOnly={false}
-        value={photo}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              name,
-              description,
-              uid,
-              photo: value,
-            };
-            const result = onChange(modelFields);
-            value = result?.photo ?? value;
-          }
-          if (errors.photo?.hasError) {
-            runValidationTasks("photo", value);
-          }
-          setPhoto(value);
-        }}
-        onBlur={() => runValidationTasks("photo", photo)}
-        errorMessage={errors.photo?.errorMessage}
-        hasError={errors.photo?.hasError}
-        {...getOverrideProps(overrides, "photo")}
       ></TextField>
       <Flex
         justifyContent="space-between"

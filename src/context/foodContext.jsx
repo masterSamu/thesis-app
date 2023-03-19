@@ -1,11 +1,3 @@
-/**
- * @typedef TFood
- * @property {string} id
- * @property {string} name
- * @property {string} description
- * @property {file} photo
- */
-
 import {
   createContext,
   useCallback,
@@ -14,14 +6,22 @@ import {
   useState,
 } from "react";
 import { useUser } from "./userContext";
+import { DataStore, Storage, syncExpression } from "aws-amplify";
+import { Foods as FoodModel } from "../models/index";
+
+/**
+ * @typedef TFood
+ * @property {string} id
+ * @property {string} name
+ * @property {string} description
+ * @property {file} photo
+ */
 
 /**
  * @typedef TFoodContext
  * @property {[TFood]} foods
  * @property {() => void} loadFoods
  * @property {() => void} saveFood
- * @property {{isLoading: boolean,
- * error: {message: string} | null}} status
  */
 
 /** @type {import('react').Context<TFoodContext>} */
@@ -29,44 +29,50 @@ export const FoodContext = createContext();
 
 export default function FoodContextProvider({ children }) {
   const [foods, setFoods] = useState([]);
-  const [status, setStatus] = useState({ isLoading: false, error: null });
   const { user } = useUser();
 
   /** Load foods from database */
-  const loadFoods = useCallback(() => {
-    setStatus({ ...status, isLoading: true });
-    setFoods([
-      ...foods,
-      {
-        id: "123",
-        name: "Pizza",
-        description: "Pepperoni pizza juustolla",
-        photo:
-          "https://images.unsplash.com/photo-1541745537411-b8046dc6d66c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=776&q=80",
-      },
-      {
-        id: "1234",
-        name: "Burger",
-        description: "Cheese burger with double melting cheese",
-        photo:
-          "https://images.unsplash.com/photo-1605789538467-f715d58e03f9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80",
-      },
-    ]);
-    setStatus({ ...status, isLoading: false });
+  const loadFoods = useCallback(async () => {
+    try {
+      //await DataStore.clear();
+      const response = await DataStore.query(FoodModel);
+      console.log(response);
+      if (response) {
+        setFoods(response);
+      }
+    } catch (error) {
+      console.error("query error", error);
+    }
   }, [user]);
 
   /**
    * Save food
    * @param {TFood} food
    */
-  const saveFood = (food) => {
-    setStatus({ ...status, isLoading: true });
-    setFoods([...foods, food]);
-    setStatus({ ...status, isLoading: false });
+  const saveFood = async (food) => {
+    try {
+      // Save food to database
+      const savedFood = await DataStore.save(
+        new FoodModel({
+          name: food.name,
+          description: food.description,
+          uid: user,
+        })
+      );
+      // Load file from storage
+      const photoFile = await Storage.get(savedFood.name);
+      setFoods([...foods, { ...savedFood, photo: photoFile }]);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   /** Reset foods state array */
   const resetFoods = () => setFoods([]);
+
+  const loadPhoto = async (name) => {
+    return await Storage.get(name);
+  };
 
   useEffect(() => {
     if (user) loadFoods();
@@ -75,7 +81,7 @@ export default function FoodContextProvider({ children }) {
 
   return (
     <FoodContext.Provider
-      value={{ foods, loadFoods, saveFood, resetFoods, status }}
+      value={{ foods, loadFoods, saveFood, resetFoods, loadPhoto }}
     >
       {children}
     </FoodContext.Provider>

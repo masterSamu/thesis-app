@@ -15,7 +15,6 @@ type EagerFoods = {
   readonly name?: string | null;
   readonly description?: string | null;
   readonly uid?: string | null;
-  readonly photo?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -29,7 +28,6 @@ type LazyFoods = {
   readonly name?: string | null;
   readonly description?: string | null;
   readonly uid?: string | null;
-  readonly photo?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
