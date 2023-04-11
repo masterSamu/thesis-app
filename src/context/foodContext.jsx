@@ -33,6 +33,7 @@ export default function FoodContextProvider({ children }) {
 
   /** Load foods from database */
   const loadFoods = useCallback(async () => {
+    console.log("user:", user)
     if (user) {
       const q = query(collection(db, "foods"), where("uid", "==", user));
       const querySnapshot = await getDocs(q);
@@ -49,12 +50,9 @@ export default function FoodContextProvider({ children }) {
    * @param {TFood} food
    */
   const saveFood = async (food) => {
-    if (user) {
-      console.log(food)
-      const docRef = await addDoc(collection(db, "foods"), food);
-      food.id = docRef.id;
-      setFoods([...foods, food]);
-    }
+    const docRef = await addDoc(collection(db, "foods"), food);
+    food.id = docRef.id;
+    setFoods([...foods, food]);
   };
 
   /** Reset foods state array */

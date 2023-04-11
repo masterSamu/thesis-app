@@ -27,7 +27,7 @@ export default function UserContextProvider({ children }) {
   const login = async (credentials) => {
     signInWithEmailAndPassword(auth, credentials.email, credentials.password)
       .then((userCredential) => {
-        setUser(userCredential.user);
+        setUser(userCredential.user.uid);
         localStorage.setItem("user", userCredential.user.uid);
       })
       .catch((error) => {
